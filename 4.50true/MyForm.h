@@ -14,15 +14,13 @@ namespace My450 {
 	using namespace System::Drawing;
 	using namespace std;
 
-	struct goods
-	{
-		string name;
-		string country;
-		int importAmount;
-
+	struct Date {
+		int day;
+		int month;
+		int year;
 	};
 
-	vector<goods> goodsData;
+	vector<Date> Dates;
 
 	/// <summary>
 	/// Summary for MyForm
@@ -264,61 +262,72 @@ namespace My450 {
 
 		}
 #pragma endregion
-	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 
-		String^ name = textBox1->Text;
-		String^ country = textBox2->Text;
-		String^ amount = textBox3->Text;
+	Int32^ day = Convert::ToInt32(textBox1->Text);
+	Int32^ month = Convert::ToInt32(textBox2->Text);
+	Int32^ year = Convert::ToInt32(textBox3->Text);
 
-		int rowIndex = dataGridView1->Rows->Add();
+	int rowIndex = dataGridView1->Rows->Add();
 
-		dataGridView1->Rows[rowIndex]->Cells["Column1"]->Value = name;
-		dataGridView1->Rows[rowIndex]->Cells["Column2"]->Value = country;
-		dataGridView1->Rows[rowIndex]->Cells["Column3"]->Value = amount;
-	}
-
-	private: System::Void button1_MouseClick(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
-
-		String^ nameStr = textBox1->Text;
-		String^ countryStr = textBox2->Text;
-		String^ importAmountStr = textBox3->Text;
-
-		string name = msclr::interop::marshal_as<std::string>(nameStr);
-		string country = msclr::interop::marshal_as<std::string>(countryStr);
-		int importAmount = Convert::ToInt32(importAmountStr);
-
-		goods newGoods;
-		newGoods.name = name;
-		newGoods.country = country;
-		newGoods.importAmount = importAmount;
-
-		goodsData.push_back(newGoods);
-	}
-	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
-		String^ requestedName = textBox4->Text;
-		String^ exportedCountries = "";
-		String^ exportedAmounts = "";
-
-		for (const auto& goodsItem : goodsData) {
-			if (requestedName == gcnew String(goodsItem.name.c_str())) {
-				exportedCountries += gcnew String(goodsItem.country.c_str()) + " ";
-				exportedAmounts += goodsItem.importAmount.ToString() + " ";
-			}
-		}
-
-		for (const auto& goodsItem : goodsData) {
-			if (requestedName == gcnew String(goodsItem.name.c_str())) {
-				String^ infoMessage = "Товар: " + gcnew String(goodsItem.name.c_str()) + "\n";
-				infoMessage += "Экспортируется в: " + exportedCountries + "\n";
-				infoMessage += "Объем экспорта (соответственно к каждой стране): " + exportedAmounts;
-
-				MessageBox::Show(infoMessage, "Информация о товаре", MessageBoxButtons::OK, MessageBoxIcon::Information);
-				return; // Exit the loop once the goods are found
-			}
-		}
-
-		// If goods not found, display an error message
-		MessageBox::Show("Товар не найден!", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+	dataGridView1->Rows[rowIndex]->Cells["Column1"]->Value = day;
+	dataGridView1->Rows[rowIndex]->Cells["Column2"]->Value = month;
+	dataGridView1->Rows[rowIndex]->Cells["Column3"]->Value = year;
 }
+
+  private: System::Void button1_MouseClick(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+
+	  int day = Convert::ToInt32(textBox1->Text);
+	  int month = Convert::ToInt32(textBox2->Text);
+	  int year = Convert::ToInt32(textBox3->Text);
+
+	  Date newDates;
+	  newDates.day = day;
+	  newDates.month = month;
+	  newDates.year = year;
+
+	  Dates.push_back(newDates);
+  }
+  private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+	  
+	  string springDates = "";
+
+	  for (const auto& date : Dates) {
+		  if (date.month >= 3 && date.month <= 5) {
+			  if (!springDates.empty()) {
+				  springDates += ", ";
+			  }
+			  springDates += std::to_string(date.day) + "." + std::to_string(date.month) + "." + std::to_string(date.year);
+		  }
+	  }
+
+	  String^ strSpringDates = gcnew String(springDates.c_str());
+	  
+	  int min_year = Dates[0].year;
+	  for (const auto& date : Dates) {
+		  if (date.year < min_year) {
+			  min_year = date.year;
+		  }
+	  }
+
+	  string minimal_year = to_string(min_year);
+
+	  String^ strMinYear = gcnew String(minimal_year.c_str());
+
+	  Date latest_date = Dates[0];
+	  for (const auto& date : Dates) {
+		  if (date.year > latest_date.year || (date.year == latest_date.year && date.month > latest_date.month) || (date.year == latest_date.year && date.month == latest_date.month && date.day > latest_date.day)) {
+			  latest_date = date;
+		  }
+	  };
+
+	  string LatestDate = to_string(latest_date.day) + "." + to_string(latest_date.month) + "." + to_string(latest_date.year);
+
+	  String^ strLatestDate = gcnew String(LatestDate.c_str());
+
+	  String^ message = "Даты весны: " + strSpringDates + "\nМинимальный год: " + strMinYear + "\nСамая поздняя дата: " + strLatestDate;
+
+	  MessageBox::Show(message, "Результат", MessageBoxButtons::OK, MessageBoxIcon::Information);
+  }
 };
 }
