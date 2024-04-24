@@ -15,16 +15,16 @@ namespace My450 {
 	using namespace msclr::interop;
 	using namespace std;
 
-	struct person
+	struct person // создаем структуру person
 	{
-		string fullName;
-		int day;
-		string month;
-		int year;
+		string fullName; // имя фамилия
+		int day; // дата рождения
+		string month; // месяц рождения
+		int year; // год рождения
 
 	};
 
-	vector<person> personsData;
+	vector<person> personsData; // создаем массив из объектов person
 
 	/// <summary>
 	/// Summary for MyForm
@@ -364,48 +364,48 @@ namespace My450 {
 
 		}
 #pragma endregion
-	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) { // ивент, который происходит при нажатии на button1
 
-		String^ fullNameT = textBox1->Text;
-		String^ dayT = textBox2->Text;
-		String^ monthT = textBox3->Text;
-		String^ yearT = textBox4->Text;
+		String^ fullNameT = textBox1->Text; // из textBox1 копируем текст в переменную fullNameT
+		String^ dayT = textBox2->Text; // аналогично
+		String^ monthT = textBox3->Text; // аналогично
+		String^ yearT = textBox4->Text; // аналогично
 
-		int rowIndex = dataGridView1->Rows->Add();
+		int rowIndex = dataGridView1->Rows->Add(); // добавляем новую строку в таблицу dataGridView1
 
-		dataGridView1->Rows[rowIndex]->Cells["Column1"]->Value = fullNameT;
-		dataGridView1->Rows[rowIndex]->Cells["Column2"]->Value = dayT;
-		dataGridView1->Rows[rowIndex]->Cells["Column3"]->Value = monthT;
-		dataGridView1->Rows[rowIndex]->Cells["Column4"]->Value = yearT;
+		dataGridView1->Rows[rowIndex]->Cells["Column1"]->Value = fullNameT; // добавляем в колонку 1 значение fullNameT
+		dataGridView1->Rows[rowIndex]->Cells["Column2"]->Value = dayT; // аналогично
+		dataGridView1->Rows[rowIndex]->Cells["Column3"]->Value = monthT; // аналогично
+		dataGridView1->Rows[rowIndex]->Cells["Column4"]->Value = yearT; // аналогично
 	}
 
-	private: System::Void button1_MouseClick(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+	private: System::Void button1_MouseClick(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) { // ивент, который происходит при клике мышкой на button1
+		// по сути, тоже самое что и верхний ивент
+		string fullName = marshal_as<string>(textBox1->Text); // из textBox1 копируем текст в переменную fullName, но при этом конвертируем его из String^ в string
+		int day = Convert::ToInt32(textBox2->Text); // из textBox1 копируем текст в переменную day, но конвертируем его в int
+		string month = marshal_as<string>(textBox3->Text); // аналогично fullName
+		int year = Convert::ToInt32(textBox4->Text); // аналогично day
 
-		string fullName = marshal_as<string>(textBox1->Text);
-		int day = Convert::ToInt32(textBox2->Text);
-		string month = marshal_as<string>(textBox3->Text);
-		int year = Convert::ToInt32(textBox4->Text);
+		person newPersons; // создаем новый экземпляр объекта типа person
+		newPersons.fullName = fullName; // переносим значение из fullName в этот экземпляр в соответствующее ему поле
+		newPersons.day = day; // аналогично
+		newPersons.month = month; // аналогично
+		newPersons.year = year; // аналогично
 
-		person newPersons;
-		newPersons.fullName = fullName;
-		newPersons.day = day;
-		newPersons.month = month;
-		newPersons.year = year;
+		personsData.push_back(newPersons); // добавляем этот экземпляр в массив personsData
+	} 
+	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) { // ивент, который происходит при нажатии на button2
 
-		personsData.push_back(newPersons);
-	}
-	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
-
-		for each (person personUnique in personsData) {
-			if (personUnique.year == 1999) {
-				String^ fullNameT = gcnew String(personUnique.fullName.c_str());
-				String^ dayT = gcnew String(to_string(personUnique.day).c_str());
-				String^ monthT = gcnew String(personUnique.month.c_str());
+		for each (person personUnique in personsData) { // циклом проходим по каждому объекту в массиве (и именуем каждую итерацию personUnique)
+			if (personUnique.year == 1999) { // если значение поля year у объекта 1999 (т.к. сейчас 2024 год, то всем людям, родившимся в 1999 исполняется 25)
+				String^ fullNameT = gcnew String(personUnique.fullName.c_str()); // то мы берем каждое поле от этого объекта и переносим его значение в переменную
+				String^ dayT = gcnew String(to_string(personUnique.day).c_str()); // а затем вносим его в таблицу (см. код внизу)
+				String^ monthT = gcnew String(personUnique.month.c_str()); // преобразуем каждое поле из соответствующего ему типа данных в String^
 				String^ yearT = gcnew String(to_string(personUnique.year).c_str());
 
-				int rowIndex = dataGridView2->Rows->Add();
+				int rowIndex = dataGridView2->Rows->Add(); // добавляем новую строку в таблицу dataGridView2
 
-				dataGridView2->Rows[rowIndex]->Cells["Column5"]->Value = fullNameT;
+				dataGridView2->Rows[rowIndex]->Cells["Column5"]->Value = fullNameT; // аналогично верхнему, но теперь для таблицы dataGridView2
 				dataGridView2->Rows[rowIndex]->Cells["Column6"]->Value = dayT;
 				dataGridView2->Rows[rowIndex]->Cells["Column7"]->Value = monthT;
 				dataGridView2->Rows[rowIndex]->Cells["Column8"]->Value = yearT;
